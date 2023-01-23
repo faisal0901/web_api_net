@@ -20,7 +20,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateNewProduct([FromBody] Product request)
+    public async Task<IActionResult> CreateNewPurchase([FromBody] Product request)
     {
         var productResponse = await _productService.CreateNewProduct(request);
 

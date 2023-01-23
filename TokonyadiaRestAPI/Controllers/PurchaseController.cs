@@ -24,7 +24,7 @@ public class PurchaseController:ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateNewPurchase([FromBody] Purchase payload)
     {
-        var purchaseResponse = await _purchaseService.CreateNewProduct(payload);
+        var purchaseResponse = await _purchaseService.CreateNewPurchase(payload);
 
         CommonResponse<PurchaseResponse> response = new()
         {
@@ -35,6 +35,20 @@ public class PurchaseController:ControllerBase
 
         return Created("/api/purchases", response);
        
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
+    {
+        var purchaseResponse = await _purchaseService.GetById(id);
+
+        CommonResponse<PurchaseResponse> response = new()
+        {
+            StatusCode = (int)HttpStatusCode.OK,
+            Message = "succes create by id",
+            Data = purchaseResponse
+        };
+
+        return Ok(response);
     }
  
 }
