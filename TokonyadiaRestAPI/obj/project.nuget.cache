@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "O6Ai6Or6x+JpcZobPV3K6XdVYV8FUiFcp2wUQHMHG/PKRNimh6nA6wKTK8dYI+Y6QmctJNxuDmZsiOKK8ytJJQ==",
+  "dgSpecHash": "kgZZCS2xlTH21VM+DPVgi3qEFXoSiMb/ymX3caUQe0aJCFR69xDV34MfXrQZmB0WDAkPeWuSp0wItR6N55G4iw==",
   "success": true,
   "projectFilePath": "C:\\Users\\user\\RiderProjects\\tokonyadia-api\\TokonyadiaRestAPI\\TokonyadiaRestAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.13\\microsoft.aspnetcore.authentication.jwtbearer.6.0.13.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlclient\\5.0.1\\microsoft.data.sqlclient.5.0.1.nupkg.sha512",

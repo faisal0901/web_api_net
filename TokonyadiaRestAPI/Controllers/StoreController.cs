@@ -1,36 +1,48 @@
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TokonyadiaEF.Entities;
+using TokonyadiaRestAPI.DTO;
+using TokonyadiaRestAPI.Exception;
+using TokonyadiaRestAPI.Exceptions;
 using TokonyadiaRestAPI.Repositories;
+using TokonyadiaRestAPI.Services;
 
 namespace TokonyadiaRestAPI.Controllers;
 
-[ApiController]
-[Route("api/stores")]
-public class StoreController : ControllerBase
-{
-    private readonly AppDbContext _appDbContext;
-    private readonly ILogger _logger;
 
-    public StoreController(AppDbContext appDbContext, ILogger<StoreController> logger)
+[Route("api/stores")]
+public class StoreController : BaseController
+{
+    private readonly IStoreService _storeService;
+   
+
+    public StoreController(IStoreService storeService)
     {
-        _appDbContext = appDbContext;
-        _logger = logger;
+        _storeService = storeService;
+        
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateNewStore([FromBody] Store store)
     {
-        var entry = await _appDbContext.Stores.AddAsync(store);
-        await _appDbContext.SaveChangesAsync();
-        return Created("/api/stores", entry.Entity);
+        var entry = await _storeService.CreateNewStore(store);
+        CommonResponse<StoreResponse> commondResponse = new()
+        {
+            StatusCode = (int)HttpStatusCode.Created,
+            Message = "successfully creat new Store",
+            Data = entry
+        };
+        return Created("/api/stores", commondResponse);
     }
 
     [HttpGet]
+ 
     public async Task<IActionResult> GetAllStore()
     {
-        var stores = await _appDbContext.Stores.ToListAsync();
-        return Ok(stores);
+        var entry = await _storeService.GetAllStore();
+        return Ok(entry);
     }
 
     [HttpGet("{id}")]
@@ -38,13 +50,20 @@ public class StoreController : ControllerBase
     {
         try
         {
-            var store = await _appDbContext.Stores.FirstOrDefaultAsync(store => store.Id.Equals(Guid.Parse(id)));
-
-            if (store is null) return NotFound("store not found");
-
-            return Ok(store);
+            var entry = await _storeService.GetStoreById(id);
+            CommonResponse<StoreResponse> commondResponse = new()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "successfully creat new Store",
+                Data = entry
+            };
+            return Created("/api/stores", commondResponse);
         }
-        catch (Exception e)
+        catch (NotFoundException e)
+        {
+            return new StatusCodeResult(500);
+        }
+        catch (System.Exception e)
         {
             return new StatusCodeResult(500);
         }
@@ -55,38 +74,43 @@ public class StoreController : ControllerBase
     {
         try
         {
-            if (store.Id == Guid.Empty) return new NotFoundObjectResult("store not found");
-            var currentStore = await _appDbContext.Stores.FirstOrDefaultAsync(c => c.Id.Equals(store.Id));
-            if (currentStore is null) return new NotFoundObjectResult("store not found");
-
-            var entry = _appDbContext.Stores.Attach(store);
-            _appDbContext.Stores.Update(store);
-
-            await _appDbContext.SaveChangesAsync();
-            return Ok(entry.Entity);
+            var entry = await _storeService.UpdateStore(store);
+            CommonResponse<StoreResponse> commondResponse = new()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "successfully creat new Store",
+                Data = entry
+            };
+            return Ok(commondResponse);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
-            _logger.LogError(e.Message);
+    
             return new StatusCodeResult(500);
         }
     }
+
+  
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteStoreById(string id)
     {
         try
         {
-            var store = await _appDbContext.Stores.FirstOrDefaultAsync(store => store.Id.Equals(Guid.Parse(id)));
-            if (store is null) return NotFound("store not found");
-            _appDbContext.Stores.Remove(store);
-            await _appDbContext.SaveChangesAsync();
-            return Ok("store successfully deleted");
+             await _storeService.DeleteStoreById(id);
+            CommonResponse<StoreResponse> commondResponse = new()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Message = "successfully creat new Store",
+                
+            };
+            return Created("/api/stores", commondResponse);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
-            _logger.LogError(e.Message);
+            
             return new StatusCodeResult(500);
         }
     }
 }
+

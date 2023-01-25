@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TokonyadiaEF.Entities;
 using TokonyadiaRestAPI.Entities;
+using TokonyadiaRestAPI.Exception;
+using TokonyadiaRestAPI.Exceptions;
 
 namespace TokonyadiaRestAPI.Repositories;
 
@@ -31,7 +33,7 @@ public class DbPersistence : IPersistence
                 await transaction.CommitAsync();
                 return result;
             }
-            catch (Exception e)
+            catch (NotFoundException e)
             {
                 await transaction.RollbackAsync();
                 throw;

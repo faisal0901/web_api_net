@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TokonyadiaRestAPI.DTO;
 using TokonyadiaRestAPI.Entities;
+using TokonyadiaRestAPI.Exception;
+using TokonyadiaRestAPI.Exceptions;
 using TokonyadiaRestAPI.Repositories;
 
 namespace TokonyadiaRestAPI.Services;
@@ -10,7 +12,7 @@ public class PurchaseService:IPurchaseService
     private readonly IRepository<Purchase> _purchaseRepository;
     
     private readonly IRepository<Customer> _CustomerRepository;
-    
+    private readonly IProductPriceService _productPriceService;
     private readonly ILogger _logger;
     private readonly IPersistence _persistence;
     public  PurchaseService(IPersistence persistence,IRepository<Purchase> purchaseRepository,IRepository<PurchaseDetail> purchaseDetailRepository,IRepository<Customer> CustomerRepository)
@@ -23,11 +25,16 @@ public class PurchaseService:IPurchaseService
 
     public async Task<PurchaseResponse> CreateNewPurchase(Purchase payload)
     {
+        var isValid = Guid.TryParse(payload.CustomerId.ToString(), out _);
+        if (!isValid)
+        {
+            throw new NotFoundException("not found");
+        }
         var customerCheck = await _CustomerRepository.Find(p => p.Id.Equals(Guid.Parse(payload.CustomerId.ToString())));
         if (customerCheck is null)
         {
             // return Redirect("api/customers")
-            throw new Exception("customer not found");
+            throw new NotFoundException("customer not found");
         }
 
         ;
@@ -72,9 +79,7 @@ public class PurchaseService:IPurchaseService
 
             };
             purchaseDetailResponsesTemp.Add(purchaseDetailResponse);
-
             purchaseCheck.PurchaseDetails.Add(pd);
-
         }
 
         await _persistence.SaveChangesAsync();
@@ -91,9 +96,14 @@ public class PurchaseService:IPurchaseService
 
     public async Task<PurchaseResponse> GetById(string id)
     {
+        var isValid = Guid.TryParse(id, out _);
+        if (!isValid)
+        {
+            throw new NotFoundException("not found");
+        }
         var purchaseCheck = await _purchaseRepository.Find(p => p.CustomerId.Equals(Guid.Parse(id)),
             includes: new string[] { "PurchaseDetails" });
-        if (purchaseCheck is null) throw new Exception("customer not found");
+        if (purchaseCheck is null) throw new NotFoundException("customer not found");
         var purchaseDetails = purchaseCheck.PurchaseDetails.Select(p => new PurchaseDetailResponse()
         {
         qty = p.Qty,

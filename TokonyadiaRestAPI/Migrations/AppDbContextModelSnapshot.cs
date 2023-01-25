@@ -122,32 +122,27 @@ namespace TokonyadiaRestAPI.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("NVarchar(100)")
                         .HasColumnName("address");
 
                     b.Property<string>("CustomerName")
-                        .IsRequired()
                         .HasColumnType("NVarchar(48)")
                         .HasColumnName("customer_name");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("NVarchar(48)")
-                        .HasColumnName("email");
-
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("NVarchar(14)")
                         .HasColumnName("phone_number");
 
+                    b.Property<Guid>("UserCredentialsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.HasIndex("PhoneNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[phone_number] IS NOT NULL");
+
+                    b.HasIndex("UserCredentialsId");
 
                     b.ToTable("m_customer");
                 });
@@ -185,7 +180,7 @@ namespace TokonyadiaRestAPI.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("product_price_id");
 
-                    b.Property<Guid>("PurchaseId")
+                    b.Property<Guid?>("PurchaseId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("purchase_id");
 
@@ -200,6 +195,54 @@ namespace TokonyadiaRestAPI.Migrations
                     b.HasIndex("PurchaseId");
 
                     b.ToTable("t_purchase_detail");
+                });
+
+            modelBuilder.Entity("TokonyadiaRestAPI.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Erole")
+                        .HasColumnType("int")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("m_role");
+                });
+
+            modelBuilder.Entity("TokonyadiaRestAPI.Entities.UserCredential", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("password");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("m_user_credential");
                 });
 
             modelBuilder.Entity("TokonyadiaEF.Entities.ProductPrice", b =>
@@ -219,6 +262,17 @@ namespace TokonyadiaRestAPI.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("TokonyadiaRestAPI.Entities.Customer", b =>
+                {
+                    b.HasOne("TokonyadiaRestAPI.Entities.UserCredential", "UserCredentials")
+                        .WithMany()
+                        .HasForeignKey("UserCredentialsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserCredentials");
                 });
 
             modelBuilder.Entity("TokonyadiaRestAPI.Entities.Purchase", b =>
@@ -241,19 +295,33 @@ namespace TokonyadiaRestAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("TokonyadiaRestAPI.Entities.Purchase", "Purchase")
-                        .WithMany()
-                        .HasForeignKey("PurchaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("PurchaseDetails")
+                        .HasForeignKey("PurchaseId");
 
                     b.Navigation("ProductPrice");
 
                     b.Navigation("Purchase");
                 });
 
+            modelBuilder.Entity("TokonyadiaRestAPI.Entities.UserCredential", b =>
+                {
+                    b.HasOne("TokonyadiaRestAPI.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("TokonyadiaEF.Entities.Product", b =>
                 {
                     b.Navigation("ProductPrices");
+                });
+
+            modelBuilder.Entity("TokonyadiaRestAPI.Entities.Purchase", b =>
+                {
+                    b.Navigation("PurchaseDetails");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,9 +9,9 @@ using TokonyadiaRestAPI.Services;
 
 
 namespace TokonyadiaRestAPI.Controllers;
-[ApiController]
+
 [Route("api/purchases")]
-public class PurchaseController:ControllerBase
+public class PurchaseController:BaseController
 {
     private readonly IPurchaseService _purchaseService;
     
@@ -29,7 +29,7 @@ public class PurchaseController:ControllerBase
         CommonResponse<PurchaseResponse> response = new()
         {
             StatusCode = (int)HttpStatusCode.Created,
-            Message = "successfully creat new customer",
+            Message = "successfully creat Purchase",
             Data = purchaseResponse
         };
 

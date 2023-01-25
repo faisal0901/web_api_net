@@ -65,7 +65,8 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public async Task<IEnumerable<TEntity>> FindAll()
     {
-        return await _context.Set<TEntity>().ToListAsync();
+        var entity=await  _context.Set<TEntity>().ToListAsync();
+        return entity;
     }
 
     public async Task<IEnumerable<TEntity>> FindAll(string[] includes)

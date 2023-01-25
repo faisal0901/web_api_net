@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TokonyadiaEF.Entities;
 using TokonyadiaRestAPI.DTO;
+using TokonyadiaRestAPI.Exception;
+using TokonyadiaRestAPI.Exceptions;
 using TokonyadiaRestAPI.Repositories;
 
 namespace TokonyadiaRestAPI.Services;
@@ -87,7 +89,7 @@ public class ProductService : IProductService
         var product = await _productRepository.Find(product => product.Id.Equals(Guid.Parse(id)),
             new[] { "ProductPrices" });
 
-        if (product is null) throw new Exception("product not found");
+        if (product is null) throw new NotFoundException("product not found");
 
         var productPriceResponses = product.ProductPrices.Select(productPrice => new ProductPriceResponse
         {
@@ -161,7 +163,7 @@ public class ProductService : IProductService
     public async Task DeleteById(string id)
     {
         var product = await _productRepository.FindById(Guid.Parse(id));
-        if (product is null) throw new Exception("product not found");
+        if (product is null) throw new NotFoundException("product not found");
         _productRepository.Delete(product);
         await _persistence.SaveChangesAsync();
     }

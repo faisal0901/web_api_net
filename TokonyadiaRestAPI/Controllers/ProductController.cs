@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TokonyadiaEF.Entities;
@@ -8,9 +9,9 @@ using TokonyadiaRestAPI.Services;
 
 namespace TokonyadiaRestAPI.Controllers;
 
-[ApiController]
+
 [Route("api/products")]
-public class ProductController : ControllerBase
+public class ProductController : BaseController
 {
     private readonly IProductService _productService;
 
@@ -20,6 +21,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateNewPurchase([FromBody] Product request)
     {
         var productResponse = await _productService.CreateNewProduct(request);
@@ -35,6 +37,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetProductById(string id)
     {
         var productResponse = await _productService.GetById(id);
@@ -50,6 +53,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllProduct([FromQuery] string? name, [FromQuery] int page = 1, [FromQuery] int size = 5)
     {
         var products = await _productService.GetAll(name, page, size);
@@ -65,6 +69,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    
     public async Task<IActionResult> DeleteProductById(string id)
     {
         await _productService.DeleteById(id);

@@ -167,3 +167,5 @@ C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\obj\Debug\net6.0\re
 C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\obj\Debug\net6.0\TokonyadiaRestAPI.pdb
 C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\obj\Debug\net6.0\TokonyadiaRestAPI.genruntimeconfig.cache
 C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\obj\Debug\net6.0\ref\TokonyadiaRestAPI.dll
+C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\bin\Debug\net6.0\BCrypt.Net-Next.dll
+C:\Users\user\RiderProjects\tokonyadia-api\TokonyadiaRestAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
